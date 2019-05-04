@@ -1,0 +1,22 @@
+.hero-container {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  background: no-repeat url('../../images/hero-splash.jpg');
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+}
+
+.app-name {
+  color: white;
+  font-family: 'Fredericka the Great', cursive;
+  font-size: 2.5rem;
+  transform: skew(-20deg) rotate(-1deg);
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+}
+
+img {
+  height: 200px;
+}
