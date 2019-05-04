@@ -106,6 +106,9 @@ class Analytics extends React.Component {
     return (
       <Container fluid={true}>
         <Row className="row-title">
+          <Col>Analytics</Col>
+        </Row>
+        <Row className="row-title">
           <Col>Non-GAAP Measures</Col>
         </Row>
         <Row className="row-subtitle">
@@ -123,7 +126,7 @@ class Analytics extends React.Component {
         <Row>
           <Col>Unsold unexpired bananas</Col>
           <Col>{this.unsoldUnexpiredBananas().length}</Col>
-          <Col>${sellPrice.toFixed(2)}</Col>
+          <Col>{sellPrice.toFixed(2)}</Col>
           <Col>{this.unsoldUnexpiredBananasValue()}</Col>
         </Row>
         <Row className="row-subtitle">
@@ -135,13 +138,13 @@ class Analytics extends React.Component {
         <Row>
           <Col>Unsold expired bananas</Col>
           <Col>{this.unsoldExpiredBananas().length}</Col>
-          <Col>${buyPrice.toFixed(2)}</Col>
+          <Col>{buyPrice.toFixed(2)}</Col>
           <Col>{this.unsoldExpiredBananasCost()}</Col>
         </Row>
         <Row>
           <Col>All other purchased bananas</Col>
           <Col>{bananas.length - this.unsoldExpiredBananas().length}</Col>
-          <Col>${buyPrice.toFixed(2)}</Col>
+          <Col>{buyPrice.toFixed(2)}</Col>
           <Col>{this.allOtherBananasCost()}</Col>
         </Row>
         <Row className="row-subtitle">
@@ -154,7 +157,7 @@ class Analytics extends React.Component {
           <Col>total</Col>
           <Col />
           <Col />
-          <Col>{this.potentialProfit()}</Col>
+          <Col>${this.potentialProfit()}</Col>
         </Row>
 
         <Row className="row-title">
@@ -169,8 +172,8 @@ class Analytics extends React.Component {
         <Row className="row-data">
           <Col>Bananas</Col>
           <Col>{soldBananas.length}</Col>
-          <Col>${sellPrice.toFixed(2)}</Col>
-          <Col>${this.soldBananasValue()}</Col>
+          <Col>{sellPrice.toFixed(2)}</Col>
+          <Col>{this.soldBananasValue()}</Col>
         </Row>
         <Row className="row-subtitle">
           <Col>Expenses</Col>
@@ -194,7 +197,7 @@ class Analytics extends React.Component {
           <Col>total</Col>
           <Col />
           <Col />
-          <Col>{this.totalProfit()}</Col>
+          <Col>${this.totalProfit()}</Col>
         </Row>
 
         <Row className="row-title">
