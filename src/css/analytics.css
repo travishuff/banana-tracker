@@ -1,0 +1,17 @@
+.row-title {
+  color: white;
+  font-weight: 700;
+  background-color: #a08804;
+  padding: 7px 0;
+}
+
+.row-subtitle {
+  font-weight: 700;
+  background-color: #b5d3ff;
+  padding: 3px 0;
+}
+
+.row-data {
+  min-width: 140px;
+  padding: 3px 0;
+}
