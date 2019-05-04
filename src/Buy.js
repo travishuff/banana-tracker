@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import { Button, Form, FormInput, FormGroup } from 'shards-react'
 
 class Buy extends React.Component {
   state = {
@@ -36,6 +37,17 @@ class Buy extends React.Component {
       console.error(error)
     }
   }
+  handleReset = () => {
+    this.setState({
+      number: '',
+      buyDate: '',
+    })
+  }
+  onSubmit = event => {
+    this.handleSubmit(event)
+      .then(this.handleReset())
+      .catch(console.error)
+  }
 
   render() {
     const { number, buyDate } = this.state
@@ -43,29 +55,38 @@ class Buy extends React.Component {
     return (
       <div>
         <div>Buy</div>
-        <form onSubmit={this.handleSubmit}>
-          <label htmlFor="number">
-            Number of bananas to buy
-            <input
-              type="number"
-              name="number"
-              value={number}
-              onChange={this.handleNumberChange}
-              onBlur={this.handleNumberChange}
-            />
-          </label>
-          <label htmlFor="buyDate">
-            Purchase date
-            <input
-              type="date"
-              name="buyDate"
-              value={buyDate}
-              onChange={this.handleChange}
-              onBlur={this.handleChange}
-            />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
+        <Form onSubmit={this.onSubmit}>
+          <FormGroup>
+            <label htmlFor="number">
+              Number of bananas to buy:
+              <FormInput
+                size="sm"
+                type="number"
+                name="number"
+                value={number}
+                onChange={this.handleNumberChange}
+                onBlur={this.handleNumberChange}
+              />
+            </label>
+          </FormGroup>
+          <FormGroup>
+            <label htmlFor="buyDate">
+              Purchase date:
+              <FormInput
+                size="sm"
+                type="date"
+                name="buyDate"
+                value={buyDate}
+                onChange={this.handleChange}
+                onBlur={this.handleChange}
+              />
+            </label>
+          </FormGroup>
+          <Button size="sm">Submit</Button>
+          <Button size="sm" theme="danger" onClick={this.handleReset}>
+            Reset
+          </Button>
+        </Form>
       </div>
     )
   }
