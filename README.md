@@ -35,4 +35,3 @@ GET:
 
 - Client-side validation
 - Testing
-- Further componentize Analytics.js

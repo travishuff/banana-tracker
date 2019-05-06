@@ -5,7 +5,8 @@ import get from 'lodash/get'
 
 import './css/analytics.css'
 
-import { Container, Row, Col, FormGroup, FormInput } from 'shards-react'
+import { Container, Row, Col } from 'shards-react'
+import Margins from './Margins'
 
 class Analytics extends React.Component {
   state = {
@@ -199,40 +200,12 @@ class Analytics extends React.Component {
           <Col />
           <Col>${this.totalProfit()}</Col>
         </Row>
-
-        <Row className="row-title">
-          <Col>Experiment with your margins!</Col>
-        </Row>
-        <Row>
-          <Col>
-            <FormGroup>
-              <label htmlFor="buy">
-                Buy Price
-                <FormInput
-                  type="number"
-                  name="buy"
-                  value={buyPrice}
-                  onChange={this.handleBuyPriceChange}
-                  onBlur={this.handleBuyPriceChange}
-                  size="sm"
-                />
-              </label>
-            </FormGroup>
-            <FormGroup>
-              <label htmlFor="sell">
-                Sell Price
-                <FormInput
-                  type="number"
-                  name="sell"
-                  value={sellPrice}
-                  onChange={this.handleSellPriceChange}
-                  onBlur={this.handleSellPriceChange}
-                  size="sm"
-                />
-              </label>
-            </FormGroup>
-          </Col>
-        </Row>
+        <Margins
+          buyPrice={buyPrice}
+          handleBuyPriceChange={this.handleBuyPriceChange}
+          sellPrice={sellPrice}
+          handleSellPriceChange={this.handleSellPriceChange}
+        />
       </Container>
     )
   }
