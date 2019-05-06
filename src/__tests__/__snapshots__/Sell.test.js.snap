@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot 1`] = `
+<div
+  className="container-fluid"
+>
+  <div
+    className="row-title row"
+  >
+    <div
+      className="col"
+    >
+      Sell Bananas
+    </div>
+  </div>
+  <div
+    className="row"
+  >
+    <div
+      className="col"
+    >
+      <form
+        className=""
+        onSubmit={[Function]}
+      >
+        <div
+          className="form-group"
+        >
+          <label
+            htmlFor="number"
+          >
+            Number of bananas to sell:
+            <input
+              className="form-control form-control-sm"
+              name="number"
+              onBlur={[Function]}
+              onChange={[Function]}
+              type="number"
+              value=""
+            />
+          </label>
+        </div>
+        <div
+          className="form-group"
+        >
+          <label
+            htmlFor="sellDate"
+          >
+            Sale date:
+            <input
+              className="form-control form-control-sm"
+              name="sellDate"
+              onBlur={[Function]}
+              onChange={[Function]}
+              type="date"
+              value=""
+            />
+          </label>
+        </div>
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={[Function]}
+        >
+          Submit
+        </button>
+        <button
+          className="btn btn-danger btn-sm"
+          onClick={[Function]}
+          type="button"
+        >
+          Reset
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+`;
