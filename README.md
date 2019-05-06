@@ -35,3 +35,7 @@ GET:
 
 - Client-side validation
 - Testing
+
+## Notes
+
+- Code splitting not super useful with an app this small.
