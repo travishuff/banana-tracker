@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { Row, Col, FormGroup, FormInput } from 'shards-react'
 
@@ -49,6 +50,13 @@ class Margins extends React.Component {
       </React.Fragment>
     )
   }
+}
+
+Margins.propTypes = {
+  buyPrice: PropTypes.number,
+  handleBuyPriceChange: PropTypes.func,
+  sellPrice: PropTypes.number,
+  handleSellPriceChange: PropTypes.func,
 }
 
 export default Margins
