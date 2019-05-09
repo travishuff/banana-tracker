@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot 1`] = `
+Array [
+  <div
+    className="row-title row"
+  >
+    <div
+      className="col"
+    >
+      Experiment with your margins!
+    </div>
+  </div>,
+  <div
+    className="row"
+  >
+    <div
+      className="col"
+    >
+      <div
+        className="form-group"
+      >
+        <label
+          htmlFor="buy"
+        >
+          Buy Price
+          <input
+            className="form-control form-control-sm"
+            name="buy"
+            type="number"
+          />
+        </label>
+      </div>
+      <div
+        className="form-group"
+      >
+        <label
+          htmlFor="sell"
+        >
+          Sell Price
+          <input
+            className="form-control form-control-sm"
+            name="sell"
+            type="number"
+          />
+        </label>
+      </div>
+    </div>
+  </div>,
+]
+`;

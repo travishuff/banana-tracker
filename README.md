@@ -21,7 +21,7 @@ Some useful CURL requests for testing the backend:
 
 POST:
 
-`curl -d '{"number": 5, "buyDate": "2019-05-01"}' -H "Content-Type: application/json" -X`POST http://localhost:8080/api/bananas | jsome`
+`curl -d '{"number": 5, "buyDate": "2019-05-01"}' -H "Content-Type: application/json" -X POST http://localhost:8080/api/bananas | jsome`
 
 PUT:
 
