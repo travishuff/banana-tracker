@@ -27,20 +27,18 @@ const LoadableSell = Loadable({
   loading,
 })
 
-class App extends React.Component {
-  render() {
-    return (
-      <div>
-        <NavBar />
-        <Router>
-          <LoadableHome path="/" />
-          <LoadableAnalytics path="/analytics" />
-          <LoadableBuy path="/buy" />
-          <LoadableSell path="/sell" />
-        </Router>
-      </div>
-    )
-  }
+const App = () => {
+  return (
+    <div>
+      <NavBar />
+      <Router>
+        <LoadableHome path="/" />
+        <LoadableAnalytics path="/analytics" />
+        <LoadableBuy path="/buy" />
+        <LoadableSell path="/sell" />
+      </Router>
+    </div>
+  )
 }
 
 render(<App />, document.getElementById('root'))

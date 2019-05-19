@@ -40,6 +40,8 @@ class Sell extends React.Component {
         'http://localhost:8080/api/bananas',
         this.state
       )
+
+      this.handleReset(response)
       console.log('submitted!', response)
     } catch (error) {
       console.error(error)
@@ -50,11 +52,6 @@ class Sell extends React.Component {
       number: '',
       sellDate: '',
     })
-  }
-  onSubmit = event => {
-    this.handleSubmit(event)
-      .then(this.handleReset())
-      .catch(console.error)
   }
 
   render() {
@@ -67,7 +64,7 @@ class Sell extends React.Component {
         </Row>
         <Row>
           <Col>
-            <Form onSubmit={this.onSubmit}>
+            <Form onSubmit={this.handleSubmit}>
               <FormGroup>
                 <label htmlFor="number">
                   Number of bananas to sell:

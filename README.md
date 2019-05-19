@@ -37,5 +37,3 @@ GET:
 - Testing
 
 ## Notes
-
-- Code splitting not super useful with an app this small.
