@@ -6,5 +6,19 @@
 
 body {
   margin: 0;
-  background-color: lightgrey;
+  background-color: #fff;
+}
+
+.main-container {
+  margin-top: 10px;
+}
+
+@media screen and (min-width: 768px) {
+  .main-container {
+    padding: 0 15px;
+  }
+}
+
+.ui.menu {
+  margin-bottom: 0;
 }

@@ -1,15 +1,14 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { Router } from '@reach/router'
 import Loadable from 'react-loadable'
+import { Router } from '@reach/router'
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'shards-ui/dist/css/shards.min.css'
+import 'semantic-ui-css/semantic.min.css'
 import './css/app.css'
 
 import NavBar from './NavBar'
 
-const loading = () => <h1>Loading split code ...</h1>
+const loading = () => <h2>Loading split code ...</h2>
 const LoadableHome = Loadable({
   loader: () => import('./Home'),
   loading,
@@ -26,6 +25,14 @@ const LoadableSell = Loadable({
   loader: () => import('./Sell'),
   loading,
 })
+const LoadableFullList = Loadable({
+  loader: () => import('./FullList'),
+  loading,
+})
+const LoadableGroupList = Loadable({
+  loader: () => import('./GroupList'),
+  loading,
+})
 
 const App = () => {
   return (
@@ -36,6 +43,8 @@ const App = () => {
         <LoadableAnalytics path="/analytics" />
         <LoadableBuy path="/buy" />
         <LoadableSell path="/sell" />
+        <LoadableGroupList path="/groups" />
+        <LoadableFullList path="/list" />
       </Router>
     </div>
   )

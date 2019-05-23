@@ -15,6 +15,7 @@
   font-size: 2.5rem;
   transform: skew(-20deg) rotate(-1deg);
   text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
+  padding: 20px;
 }
 
 img {

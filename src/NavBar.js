@@ -4,57 +4,50 @@ import { Link } from '@reach/router'
 import './css/nav-bar.css'
 import banana from '../images/banana-logo.png'
 
-import {
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  Collapse,
-} from 'shards-react'
+import { Menu } from 'semantic-ui-react'
 
 class NavBar extends React.Component {
-  state = {
-    dropdownOpen: false,
-    collapseOpen: false,
-  }
+  state = {}
 
-  toggleNavbar = () => {
-    this.setState({
-      collapseOpen: !this.state.collapseOpen,
-    })
-  }
+  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   render() {
+    const { activeItem } = this.state
+
     return (
-      <Navbar type="dark" theme="primary" expand="md">
-        <NavbarBrand tag={Link} to="/">
+      <Menu stackable>
+        <Menu.Item as={Link} to="/">
           <img src={banana} className="logo" alt="Banana Tracker logo" />
           Banana Tracker
-        </NavbarBrand>
-        <NavbarToggler onClick={this.toggleNavbar} />
-
-        <Collapse open={this.state.collapseOpen} navbar>
-          <Nav navbar>
-            <NavItem>
-              <NavLink tag={Link} to="/analytics">
-                Analytics
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={Link} to="/buy">
-                Buy
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={Link} to="/sell">
-                Sell
-              </NavLink>
-            </NavItem>
-          </Nav>
-        </Collapse>
-      </Navbar>
+        </Menu.Item>
+        <Menu.Item
+          as={Link}
+          to="/analytics"
+          name="analytics"
+          active={activeItem === 'analytics'}
+          onClick={this.handleItemClick}
+        >
+          Analytics
+        </Menu.Item>
+        <Menu.Item
+          as={Link}
+          to="/buy"
+          name="buy"
+          active={activeItem === 'buy'}
+          onClick={this.handleItemClick}
+        >
+          Buy
+        </Menu.Item>
+        <Menu.Item
+          as={Link}
+          to="/sell"
+          name="sell"
+          active={activeItem === 'sell'}
+          onClick={this.handleItemClick}
+        >
+          Sell
+        </Menu.Item>
+      </Menu>
     )
   }
 }

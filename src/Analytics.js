@@ -2,10 +2,11 @@ import React from 'react'
 import axios from 'axios'
 import { differenceInCalendarDays } from 'date-fns'
 import get from 'lodash/get'
+import { Link } from '@reach/router'
 
 import './css/analytics.css'
 
-import { Container, Row, Col } from 'shards-react'
+import { Button, Container, Table } from 'semantic-ui-react'
 import Margins from './Margins'
 
 class Analytics extends React.Component {
@@ -19,21 +20,19 @@ class Analytics extends React.Component {
     unsoldBananas: [],
   }
 
-  componentDidMount() {
-    axios
+  async componentDidMount() {
+    const response = await axios
       .get('http://localhost:8080/api/bananas')
-      .then(response => {
-        this.parseBananas(response.data)
-      })
       .catch(console.error)
+    this.parseBananas(response.data)
   }
 
   parseBananas = bananas => {
     const expiredBananas = bananas.filter(banana => {
-      return differenceInCalendarDays(new Date(), get(banana, 'buyDate')) >= 10
+      return differenceInCalendarDays(new Date(), get(banana, 'buyDate')) >= 11
     })
     const unexpiredBananas = bananas.filter(banana => {
-      return differenceInCalendarDays(new Date(), get(banana, 'buyDate')) < 10
+      return differenceInCalendarDays(new Date(), get(banana, 'buyDate')) < 11
     })
     const soldBananas = bananas.filter(banana => {
       return get(banana, 'sellDate') !== null
@@ -51,7 +50,7 @@ class Analytics extends React.Component {
     })
   }
 
-  // GAAP Accounting
+  // GAAP Measures: computed properties based on current state.
   soldBananasValue = () => {
     return (this.state.soldBananas.length * this.state.sellPrice).toFixed(2)
   }
@@ -62,7 +61,7 @@ class Analytics extends React.Component {
     return (this.soldBananasValue() - this.totalBananasCost()).toFixed(2)
   }
 
-  // Non-GAAP Accounting
+  // Non-GAAP Measures: computed properties based on current state.
   unsoldUnexpiredBananas = () => {
     return this.state.unexpiredBananas.filter(
       banana => banana.sellDate === null
@@ -95,6 +94,7 @@ class Analytics extends React.Component {
       buyPrice: Number(event.target.value),
     })
   }
+
   handleSellPriceChange = event => {
     this.setState({
       sellPrice: Number(event.target.value),
@@ -105,101 +105,116 @@ class Analytics extends React.Component {
     const { bananas, buyPrice, sellPrice, soldBananas } = this.state
 
     return (
-      <Container fluid={true}>
-        <Row className="row-title">
-          <Col>Analytics</Col>
-        </Row>
-        <Row className="row-title">
-          <Col>Non-GAAP Measures</Col>
-        </Row>
-        <Row className="row-subtitle">
-          <Col>Revenue</Col>
-          <Col>Amount</Col>
-          <Col>Price</Col>
-          <Col>Value</Col>
-        </Row>
-        <Row>
-          <Col>Bananas sold</Col>
-          <Col>{soldBananas.length}</Col>
-          <Col>${sellPrice.toFixed(2)}</Col>
-          <Col>${this.soldBananasValue()}</Col>
-        </Row>
-        <Row>
-          <Col>Unsold unexpired bananas</Col>
-          <Col>{this.unsoldUnexpiredBananas().length}</Col>
-          <Col>{sellPrice.toFixed(2)}</Col>
-          <Col>{this.unsoldUnexpiredBananasValue()}</Col>
-        </Row>
-        <Row className="row-subtitle">
-          <Col>Expenses</Col>
-          <Col>Amount</Col>
-          <Col>Price</Col>
-          <Col>Value</Col>
-        </Row>
-        <Row>
-          <Col>Unsold expired bananas</Col>
-          <Col>{this.unsoldExpiredBananas().length}</Col>
-          <Col>{buyPrice.toFixed(2)}</Col>
-          <Col>{this.unsoldExpiredBananasCost()}</Col>
-        </Row>
-        <Row>
-          <Col>All other purchased bananas</Col>
-          <Col>{bananas.length - this.unsoldExpiredBananas().length}</Col>
-          <Col>{buyPrice.toFixed(2)}</Col>
-          <Col>{this.allOtherBananasCost()}</Col>
-        </Row>
-        <Row className="row-subtitle">
-          <Col>Profit/Loss</Col>
-          <Col />
-          <Col />
-          <Col />
-        </Row>
-        <Row className="row-data">
-          <Col>total</Col>
-          <Col />
-          <Col />
-          <Col>${this.potentialProfit()}</Col>
-        </Row>
+      <Container fluid={true} className="main-container">
+        <h1>Analytics</h1>
 
-        <Row className="row-title">
-          <Col>GAAP Measures</Col>
-        </Row>
-        <Row className="row-subtitle">
-          <Col>Revenue</Col>
-          <Col>Amount</Col>
-          <Col>Price</Col>
-          <Col>Value</Col>
-        </Row>
-        <Row className="row-data">
-          <Col>Bananas</Col>
-          <Col>{soldBananas.length}</Col>
-          <Col>{sellPrice.toFixed(2)}</Col>
-          <Col>{this.soldBananasValue()}</Col>
-        </Row>
-        <Row className="row-subtitle">
-          <Col>Expenses</Col>
-          <Col>Amount</Col>
-          <Col>Price</Col>
-          <Col>Value</Col>
-        </Row>
-        <Row className="row-data">
-          <Col>Bananas</Col>
-          <Col>{bananas.length}</Col>
-          <Col>{buyPrice.toFixed(2)}</Col>
-          <Col>{this.totalBananasCost()}</Col>
-        </Row>
-        <Row className="row-subtitle">
-          <Col>Profit/Loss</Col>
-          <Col />
-          <Col />
-          <Col />
-        </Row>
-        <Row className="row-data">
-          <Col>total</Col>
-          <Col />
-          <Col />
-          <Col>${this.totalProfit()}</Col>
-        </Row>
+        <Table color="blue" unstackable>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell colSpan="4">Non-GAAP Measures</Table.HeaderCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.HeaderCell>Item</Table.HeaderCell>
+              <Table.HeaderCell>Amount</Table.HeaderCell>
+              <Table.HeaderCell>Price</Table.HeaderCell>
+              <Table.HeaderCell>Value</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell>Bananas sold</Table.Cell>
+              <Table.Cell>{soldBananas.length}</Table.Cell>
+              <Table.Cell>${sellPrice.toFixed(2)}</Table.Cell>
+              <Table.Cell positive>${this.soldBananasValue()}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>Unsold unexpired bananas</Table.Cell>
+              <Table.Cell>{this.unsoldUnexpiredBananas().length}</Table.Cell>
+              <Table.Cell>${sellPrice.toFixed(2)}</Table.Cell>
+              <Table.Cell positive>
+                ${this.unsoldUnexpiredBananasValue()}
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>Unsold expired bananas</Table.Cell>
+              <Table.Cell>{this.unsoldExpiredBananas().length}</Table.Cell>
+              <Table.Cell>${buyPrice.toFixed(2)}</Table.Cell>
+              <Table.Cell negative>
+                ${this.unsoldExpiredBananasCost()}
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>All other purchased bananas</Table.Cell>
+              <Table.Cell>
+                {bananas.length - this.unsoldExpiredBananas().length}
+              </Table.Cell>
+              <Table.Cell>${buyPrice.toFixed(2)}</Table.Cell>
+              <Table.Cell negative>${this.allOtherBananasCost()}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell colSpan="3" textAlign="right">
+                Potential Profit/Loss
+              </Table.Cell>
+              <Table.Cell
+                positive={this.potentialProfit() > 0 ? true : false}
+                negative={this.potentialProfit() < 0 ? true : false}
+              >
+                ${Math.abs(this.potentialProfit()).toFixed(2)}
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
+
+        <Table color="green" unstackable>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell colSpan="4">GAAP Measures</Table.HeaderCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.HeaderCell>Item</Table.HeaderCell>
+              <Table.HeaderCell>Amount</Table.HeaderCell>
+              <Table.HeaderCell>Price</Table.HeaderCell>
+              <Table.HeaderCell>Value</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            <Table.Row>
+              <Table.Cell>Bananas sold</Table.Cell>
+              <Table.Cell>{soldBananas.length}</Table.Cell>
+              <Table.Cell>${sellPrice.toFixed(2)}</Table.Cell>
+              <Table.Cell positive>${this.soldBananasValue()}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell>Bananas purchased</Table.Cell>
+              <Table.Cell>{bananas.length}</Table.Cell>
+              <Table.Cell>${buyPrice.toFixed(2)}</Table.Cell>
+              <Table.Cell negative>${this.totalBananasCost()}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Cell colSpan="3" textAlign="right">
+                Profit/Loss
+              </Table.Cell>
+              <Table.Cell
+                positive={this.totalProfit() > 0 ? true : false}
+                negative={this.totalProfit() < 0 ? true : false}
+              >
+                ${Math.abs(this.totalProfit()).toFixed(2)}
+              </Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
+
+        <Button color="blue">
+          <Link to="/groups" className="button-text">
+            List of Banana Groups
+          </Link>
+        </Button>
+        <Button color="blue">
+          <Link to="/list" className="button-text">
+            Full List of Bananas
+          </Link>
+        </Button>
+
         <Margins
           buyPrice={buyPrice}
           handleBuyPriceChange={this.handleBuyPriceChange}
