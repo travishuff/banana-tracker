@@ -2,6 +2,7 @@ import React from 'react'
 import { create } from 'react-test-renderer'
 
 import Analytics from '../Analytics'
+import { DB } from '../testDB'
 
 // Snapshot test
 test('snapshot', () => {
@@ -11,132 +12,83 @@ test('snapshot', () => {
 })
 
 // Unit testing
-test('handleBuyPriceChange method changes value', () => {
+test('handlePriceChange for `buyPrice` method changes value', () => {
   const c = create(<Analytics />)
   const instance = c.getInstance()
 
   instance.state.buyPrice = 0.25
   const event = {
     target: {
+      name: 'buyPrice',
       value: 0.5,
     },
   }
-  instance.handleBuyPriceChange(event)
+  instance.handlePriceChange(event)
   expect(instance.state.buyPrice).toBe(0.5)
 })
 
-test('handleSellPriceChange method changes value', () => {
+test('handlePriceChange for `sellPrice` method changes value', () => {
   const c = create(<Analytics />)
   const instance = c.getInstance()
 
-  instance.state.sellPrice = 0.5
+  instance.state.sellPrice = 0.35
   const event = {
     target: {
-      value: 1,
+      name: 'sellPrice',
+      value: 0.5,
     },
   }
-  instance.handleBuyPriceChange(event)
-  expect(instance.state.buyPrice).toBe(1)
+  instance.handlePriceChange(event)
+  expect(instance.state.sellPrice).toBe(0.5)
 })
 
-test('parseBananas method creates correct arrays', () => {
+test('handleDateChange for `start` method changes value', () => {
   const c = create(<Analytics />)
   const instance = c.getInstance()
-  const bananas = [
-    {
-      id: '2f460f57-5691-4198-a4b6-05c772f76467',
-      buyDate: '2019-05-01',
-      sellDate: '2019-05-03',
-    },
-    {
-      id: 'bdc2d386-e088-4d97-a013-f2deebb93271',
-      buyDate: '2019-05-01',
-      sellDate: '2019-05-03',
-    },
-    {
-      id: 'a6faa3e7-ed3d-47ad-994d-12d6f79dd3f2',
-      buyDate: '2019-05-01',
-      sellDate: '2019-05-03',
-    },
-    {
-      id: 'dcff44af-cc04-4a64-a29d-a0426af3990c',
-      buyDate: '2019-05-01',
-      sellDate: '2019-05-03',
-    },
-    {
-      id: '707d1010-37d1-4906-a888-7b41a3dae231',
-      buyDate: '2019-04-13',
-      sellDate: null,
-    },
-    {
-      id: 'a78a031c-bc21-47e2-8973-90bbd378ae58',
-      buyDate: '2019-04-13',
-      sellDate: null,
-    },
-    {
-      id: '5bcb2627-d4ba-486b-b770-5d470b303485',
-      buyDate: '2019-04-13',
-      sellDate: null,
-    },
-    {
-      id: 'f8415818-a10d-4fec-b47a-3c0f6623261d',
-      buyDate: '2019-04-13',
-      sellDate: null,
-    },
-    {
-      id: '7b183bee-dac5-4739-b25a-bfd81d8af9be',
-      buyDate: '2019-04-13',
-      sellDate: null,
-    },
-  ]
 
-  instance.parseBananas(bananas)
-  expect(instance.state.soldBananas).toStrictEqual([
+  instance.state.start = '2019-06-01'
+  const event = {
+    target: {
+      name: 'start',
+      value: '2019-06-30',
+    },
+  }
+  instance.handleDateChange(event)
+  expect(instance.state.start).toBe('2019-06-30')
+})
+
+test('handleDateChange for `end` method changes value', () => {
+  const c = create(<Analytics />)
+  const instance = c.getInstance()
+
+  instance.state.end = '2019-06-01'
+  const event = {
+    target: {
+      name: 'end',
+      value: '2019-06-30',
+    },
+  }
+  instance.handleDateChange(event)
+  expect(instance.state.end).toBe('2019-06-30')
+})
+
+test('bananasByTime method creates array', () => {
+  const c = create(<Analytics />)
+  const instance = c.getInstance()
+
+  instance.state.start = '2019-06-01'
+  instance.state.end = '2019-06-30'
+  instance.state.data = DB
+  const result = instance.bananasByTime()
+  expect(result).toStrictEqual([
     {
-      id: '2f460f57-5691-4198-a4b6-05c772f76467',
-      buyDate: '2019-05-01',
-      sellDate: '2019-05-03',
+      id: '93b03cdc-1480-4220-861c-e20756a43e42',
+      buyDate: '2019-06-01',
+      sellDate: '2019-06-06',
     },
     {
-      id: 'bdc2d386-e088-4d97-a013-f2deebb93271',
-      buyDate: '2019-05-01',
-      sellDate: '2019-05-03',
-    },
-    {
-      id: 'a6faa3e7-ed3d-47ad-994d-12d6f79dd3f2',
-      buyDate: '2019-05-01',
-      sellDate: '2019-05-03',
-    },
-    {
-      id: 'dcff44af-cc04-4a64-a29d-a0426af3990c',
-      buyDate: '2019-05-01',
-      sellDate: '2019-05-03',
-    },
-  ])
-  expect(instance.state.unsoldBananas).toStrictEqual([
-    {
-      id: '707d1010-37d1-4906-a888-7b41a3dae231',
-      buyDate: '2019-04-13',
-      sellDate: null,
-    },
-    {
-      id: 'a78a031c-bc21-47e2-8973-90bbd378ae58',
-      buyDate: '2019-04-13',
-      sellDate: null,
-    },
-    {
-      id: '5bcb2627-d4ba-486b-b770-5d470b303485',
-      buyDate: '2019-04-13',
-      sellDate: null,
-    },
-    {
-      id: 'f8415818-a10d-4fec-b47a-3c0f6623261d',
-      buyDate: '2019-04-13',
-      sellDate: null,
-    },
-    {
-      id: '7b183bee-dac5-4739-b25a-bfd81d8af9be',
-      buyDate: '2019-04-13',
+      id: '19d1adf5-cb4d-42f3-b8b2-116f435c0523',
+      buyDate: '2019-06-30',
       sellDate: null,
     },
   ])

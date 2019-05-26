@@ -79,7 +79,7 @@ class GroupList extends React.Component {
             {Object.keys(bananasObj).map(key => {
               const [sellDate, quantity] = Object.entries(
                 bananasObj[key]
-              ).reduce((acc, val) => acc.concat(val), [])
+              ).flat()
               return (
                 <Table.Row key={key}>
                   <Table.Cell>{quantity}</Table.Cell>

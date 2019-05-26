@@ -3,35 +3,32 @@ import PropTypes from 'prop-types'
 
 import { Form } from 'semantic-ui-react'
 
-const Margins = ({
-  buyPrice,
-  handleBuyPriceChange,
-  sellPrice,
-  handleSellPriceChange,
-}) => {
+const Margins = ({ buyPrice, sellPrice, handlePriceChange }) => {
   return (
     <React.Fragment>
       <h3>Experiment with your margins!</h3>
 
       <Form>
-        <Form.Input
-          label="Buy Price:"
-          width={8}
-          type="number"
-          name="buy"
-          value={buyPrice}
-          onChange={handleBuyPriceChange}
-          onBlur={handleBuyPriceChange}
-        />
-        <Form.Input
-          label="Sell Price:"
-          width={8}
-          type="number"
-          name="sell"
-          value={sellPrice}
-          onChange={handleSellPriceChange}
-          onBlur={handleSellPriceChange}
-        />
+        <Form.Group>
+          <Form.Input
+            label="Buy Price:"
+            width={4}
+            type="number"
+            name="buyPrice"
+            value={buyPrice}
+            onChange={handlePriceChange}
+            onBlur={handlePriceChange}
+          />
+          <Form.Input
+            label="Sell Price:"
+            width={4}
+            type="number"
+            name="sellPrice"
+            value={sellPrice}
+            onChange={handlePriceChange}
+            onBlur={handlePriceChange}
+          />
+        </Form.Group>
       </Form>
     </React.Fragment>
   )
@@ -39,9 +36,8 @@ const Margins = ({
 
 Margins.propTypes = {
   buyPrice: PropTypes.number,
-  handleBuyPriceChange: PropTypes.func,
+  handlePriceChange: PropTypes.func,
   sellPrice: PropTypes.number,
-  handleSellPriceChange: PropTypes.func,
 }
 
 export default Margins

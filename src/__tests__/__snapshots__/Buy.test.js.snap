@@ -2,76 +2,108 @@
 
 exports[`snapshot 1`] = `
 <div
-  className="container-fluid"
+  className="ui fluid container main-container"
 >
-  <div
-    className="row-title row"
+  <h1>
+    Buy Bananas
+  </h1>
+  <form
+    className="ui form"
+    onSubmit={[Function]}
   >
     <div
-      className="col"
+      className="eight wide field"
     >
-      Buy Bananas
+      <label>
+        Quantity:
+      </label>
+      <div
+        className="ui input"
+      >
+        <input
+          name="number"
+          onBlur={[Function]}
+          onChange={[Function]}
+          placeholder="0"
+          type="number"
+          value=""
+        />
+      </div>
     </div>
-  </div>
-  <div
-    className="row"
-  >
     <div
-      className="col"
+      className="eight wide field"
     >
-      <form
-        className=""
-        onSubmit={[Function]}
+      <label>
+        Purchase date:
+      </label>
+      <div
+        className="ui input"
+      >
+        <input
+          name="buyDate"
+          onBlur={[Function]}
+          onChange={[Function]}
+          type="date"
+          value=""
+        />
+      </div>
+    </div>
+    <div
+      className="ui hidden positive message"
+    >
+      <div
+        className="content"
       >
         <div
-          className="form-group"
+          className="header"
         >
-          <label
-            htmlFor="number"
-          >
-            Number of bananas to buy:
-            <input
-              className="form-control form-control-sm"
-              name="number"
-              onBlur={[Function]}
-              onChange={[Function]}
-              type="number"
-              value=""
-            />
-          </label>
+          Success
         </div>
+        <p>
+          You bought bananas!
+        </p>
+      </div>
+    </div>
+    <div
+      className="ui hidden negative message"
+    >
+      <div
+        className="content"
+      >
         <div
-          className="form-group"
+          className="header"
         >
-          <label
-            htmlFor="buyDate"
-          >
-            Purchase date:
-            <input
-              className="form-control form-control-sm"
-              name="buyDate"
-              onBlur={[Function]}
-              onChange={[Function]}
-              type="date"
-              value=""
-            />
-          </label>
+          Error
         </div>
+        <p>
+          
+        </p>
+      </div>
+    </div>
+    <div
+      className="fields"
+    >
+      <div
+        className="field"
+      >
         <button
-          className="btn btn-primary btn-sm"
+          className="ui primary button"
           onClick={[Function]}
         >
           Submit
         </button>
+      </div>
+      <div
+        className="field"
+      >
         <button
-          className="btn btn-danger btn-sm"
+          className="ui red button"
           onClick={[Function]}
-          type="button"
         >
           Reset
         </button>
-      </form>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
 `;

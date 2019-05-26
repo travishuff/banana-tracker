@@ -31,9 +31,6 @@ GET:
 
 `curl http://localhost:8080/api/bananas | jsome`
 
-## Work In Progress
-
-- Client-side validation
-- Testing
-
 ## Notes
+
+The backend database acts as the single source of truth for all data, so that multiple clients can be attached and get the latest data.
