@@ -47,6 +47,7 @@ class Buy extends React.Component {
         .post('http://localhost:8080/api/bananas', this.state)
         .catch(console.error)
 
+      // pass in response so this function doesn't run until above promise is resolved
       this.handleSuccessfulSubmit(response)
     }
   }

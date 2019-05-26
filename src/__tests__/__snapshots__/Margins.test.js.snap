@@ -2,50 +2,49 @@
 
 exports[`snapshot 1`] = `
 Array [
-  <div
-    className="row-title row"
+  <h3>
+    Experiment with your margins!
+  </h3>,
+  <form
+    className="ui form"
+    onSubmit={[Function]}
   >
     <div
-      className="col"
-    >
-      Experiment with your margins!
-    </div>
-  </div>,
-  <div
-    className="row"
-  >
-    <div
-      className="col"
+      className="fields"
     >
       <div
-        className="form-group"
+        className="four wide field"
       >
-        <label
-          htmlFor="buy"
+        <label>
+          Buy Price:
+        </label>
+        <div
+          className="ui input"
         >
-          Buy Price
           <input
-            className="form-control form-control-sm"
-            name="buy"
+            name="buyPrice"
+            onChange={[Function]}
             type="number"
           />
-        </label>
+        </div>
       </div>
       <div
-        className="form-group"
+        className="four wide field"
       >
-        <label
-          htmlFor="sell"
+        <label>
+          Sell Price:
+        </label>
+        <div
+          className="ui input"
         >
-          Sell Price
           <input
-            className="form-control form-control-sm"
-            name="sell"
+            name="sellPrice"
+            onChange={[Function]}
             type="number"
           />
-        </label>
+        </div>
       </div>
     </div>
-  </div>,
+  </form>,
 ]
 `;

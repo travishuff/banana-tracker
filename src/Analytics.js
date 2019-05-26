@@ -1,61 +1,70 @@
 import React from 'react'
 import axios from 'axios'
-import { differenceInCalendarDays } from 'date-fns'
+import {
+  differenceInCalendarDays,
+  format,
+  lastDayOfMonth,
+  startOfMonth,
+} from 'date-fns'
 import get from 'lodash/get'
 import { Link } from '@reach/router'
 
 import './css/analytics.css'
 
-import { Button, Container, Table } from 'semantic-ui-react'
+import { Button, Container, Form, Table } from 'semantic-ui-react'
+import Dates from './Dates'
 import Margins from './Margins'
 
 class Analytics extends React.Component {
   state = {
+    data: [],
     buyPrice: 0.2,
     sellPrice: 0.35,
-    bananas: [],
-    expiredBananas: [],
-    soldBananas: [],
-    unexpiredBananas: [],
-    unsoldBananas: [],
+    start: format(startOfMonth(new Date()), 'YYYY-MM-DD'),
+    end: format(lastDayOfMonth(new Date()), 'YYYY-MM-DD'),
   }
 
-  async componentDidMount() {
-    const response = await axios
-      .get('http://localhost:8080/api/bananas')
-      .catch(console.error)
-    this.parseBananas(response.data)
-  }
+  bananasByTime = () => {
+    return this.state.data.filter(banana => {
+      const buyDate = get(banana, 'buyDate', '')
+      const sellDate = get(banana, 'sellDate', '')
 
-  parseBananas = bananas => {
-    const expiredBananas = bananas.filter(banana => {
+      return (
+        Date.parse(buyDate) >= Date.parse(this.state.start) &&
+        Date.parse(buyDate) <= Date.parse(this.state.end) &&
+        (sellDate === null ||
+          (Date.parse(sellDate) >= Date.parse(this.state.start) &&
+            Date.parse(sellDate) <= Date.parse(this.state.end)))
+      )
+    })
+  }
+  expiredBananas = () => {
+    return this.bananasByTime().filter(banana => {
       return differenceInCalendarDays(new Date(), get(banana, 'buyDate')) >= 11
     })
-    const unexpiredBananas = bananas.filter(banana => {
+  }
+  soldBananas = () => {
+    return this.bananasByTime().filter(
+      banana => get(banana, 'sellDate') !== null
+    )
+  }
+  unexpiredBananas = () => {
+    return this.bananasByTime().filter(banana => {
       return differenceInCalendarDays(new Date(), get(banana, 'buyDate')) < 11
     })
-    const soldBananas = bananas.filter(banana => {
-      return get(banana, 'sellDate') !== null
-    })
-    const unsoldBananas = bananas.filter(banana => {
-      return get(banana, 'sellDate') === null
-    })
-
-    this.setState({
-      bananas,
-      expiredBananas,
-      soldBananas,
-      unexpiredBananas,
-      unsoldBananas,
-    })
+  }
+  unsoldBananas = () => {
+    return this.bananasByTime().filter(
+      banana => get(banana, 'sellDate') === null
+    )
   }
 
   // GAAP Measures: computed properties based on current state.
   soldBananasValue = () => {
-    return (this.state.soldBananas.length * this.state.sellPrice).toFixed(2)
+    return (this.soldBananas().length * this.state.sellPrice).toFixed(2)
   }
   totalBananasCost = () => {
-    return (this.state.bananas.length * this.state.buyPrice).toFixed(2)
+    return (this.bananasByTime().length * this.state.buyPrice).toFixed(2)
   }
   totalProfit = () => {
     return (this.soldBananasValue() - this.totalBananasCost()).toFixed(2)
@@ -63,16 +72,14 @@ class Analytics extends React.Component {
 
   // Non-GAAP Measures: computed properties based on current state.
   unsoldUnexpiredBananas = () => {
-    return this.state.unexpiredBananas.filter(
-      banana => banana.sellDate === null
-    )
+    return this.unexpiredBananas().filter(banana => banana.sellDate === null)
   }
   unsoldUnexpiredBananasValue = () => {
     // prettier-ignore
     return (this.unsoldUnexpiredBananas().length * this.state.sellPrice).toFixed(2)
   }
   unsoldExpiredBananas = () => {
-    return this.state.expiredBananas.filter(banana => banana.sellDate === null)
+    return this.expiredBananas().filter(banana => banana.sellDate === null)
   }
   unsoldExpiredBananasCost = () => {
     return (this.unsoldExpiredBananas().length * this.state.buyPrice).toFixed(2)
@@ -89,24 +96,72 @@ class Analytics extends React.Component {
     ).toFixed(2)
   }
 
-  handleBuyPriceChange = event => {
+  handlePriceChange = event => {
     this.setState({
-      buyPrice: Number(event.target.value),
+      [event.target.name]: Number(event.target.value),
     })
+
+    localStorage.setItem(event.target.name, event.target.value)
   }
 
-  handleSellPriceChange = event => {
+  handleDateChange = event => {
     this.setState({
-      sellPrice: Number(event.target.value),
+      [event.target.name]: event.target.value,
     })
+
+    localStorage.setItem(event.target.name, event.target.value)
+  }
+
+  resetFields = () => {
+    this.setState({
+      buyPrice: 0.2,
+      sellPrice: 0.35,
+      start: format(startOfMonth(new Date()), 'YYYY-MM-DD'),
+      end: format(lastDayOfMonth(new Date()), 'YYYY-MM-DD'),
+    })
+
+    localStorage.clear()
+  }
+
+  hydrateStateWithLocalStorage() {
+    for (let key in this.state) {
+      if (localStorage.hasOwnProperty(key)) {
+        let value = localStorage.getItem(key)
+
+        try {
+          value = JSON.parse(value)
+          this.setState({ [key]: value })
+        } catch (e) {
+          this.setState({ [key]: value })
+        }
+      }
+    }
+  }
+
+  async componentDidMount() {
+    const response = await axios
+      .get('http://localhost:8080/api/bananas')
+      .catch(console.error)
+    this.setState(
+      {
+        data: response.data,
+      },
+      this.hydrateStateWithLocalStorage()
+    )
   }
 
   render() {
-    const { bananas, buyPrice, sellPrice, soldBananas } = this.state
+    const { buyPrice, sellPrice, start, end } = this.state
 
     return (
       <Container fluid={true} className="main-container">
         <h1>Analytics</h1>
+
+        <Dates
+          start={start}
+          end={end}
+          handleDateChange={this.handleDateChange}
+        />
 
         <Table color="blue" unstackable>
           <Table.Header>
@@ -123,7 +178,7 @@ class Analytics extends React.Component {
           <Table.Body>
             <Table.Row>
               <Table.Cell>Bananas sold</Table.Cell>
-              <Table.Cell>{soldBananas.length}</Table.Cell>
+              <Table.Cell>{this.soldBananas().length}</Table.Cell>
               <Table.Cell>${sellPrice.toFixed(2)}</Table.Cell>
               <Table.Cell positive>${this.soldBananasValue()}</Table.Cell>
             </Table.Row>
@@ -146,7 +201,8 @@ class Analytics extends React.Component {
             <Table.Row>
               <Table.Cell>All other purchased bananas</Table.Cell>
               <Table.Cell>
-                {bananas.length - this.unsoldExpiredBananas().length}
+                {this.bananasByTime().length -
+                  this.unsoldExpiredBananas().length}
               </Table.Cell>
               <Table.Cell>${buyPrice.toFixed(2)}</Table.Cell>
               <Table.Cell negative>${this.allOtherBananasCost()}</Table.Cell>
@@ -180,13 +236,13 @@ class Analytics extends React.Component {
           <Table.Body>
             <Table.Row>
               <Table.Cell>Bananas sold</Table.Cell>
-              <Table.Cell>{soldBananas.length}</Table.Cell>
+              <Table.Cell>{this.soldBananas().length}</Table.Cell>
               <Table.Cell>${sellPrice.toFixed(2)}</Table.Cell>
               <Table.Cell positive>${this.soldBananasValue()}</Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Cell>Bananas purchased</Table.Cell>
-              <Table.Cell>{bananas.length}</Table.Cell>
+              <Table.Cell>{this.bananasByTime().length}</Table.Cell>
               <Table.Cell>${buyPrice.toFixed(2)}</Table.Cell>
               <Table.Cell negative>${this.totalBananasCost()}</Table.Cell>
             </Table.Row>
@@ -217,9 +273,14 @@ class Analytics extends React.Component {
 
         <Margins
           buyPrice={buyPrice}
-          handleBuyPriceChange={this.handleBuyPriceChange}
           sellPrice={sellPrice}
-          handleSellPriceChange={this.handleSellPriceChange}
+          handlePriceChange={this.handlePriceChange}
+        />
+
+        <Form.Button
+          color="red"
+          onClick={this.resetFields}
+          content="Reset All Form Fields"
         />
       </Container>
     )
