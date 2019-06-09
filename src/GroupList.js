@@ -14,7 +14,7 @@ class GroupList extends React.Component {
     const response = await axios
       .get('http://localhost:8080/api/bananas')
       .catch(console.error)
-    this.setState({ bananasObj: this.parseBananas(response.data) })
+    this.setState({ bananasObj: this.parseBananas(response?.data) })
   }
 
   parseBananas = bananas => {
@@ -80,10 +80,12 @@ class GroupList extends React.Component {
               const [sellDate, quantity] = Object.entries(
                 bananasObj[key]
               ).flat()
+              const buyDate = key.slice(0, 10)
+
               return (
                 <Table.Row key={key}>
                   <Table.Cell>{quantity}</Table.Cell>
-                  <Table.Cell>{key.slice(0, 10)}</Table.Cell>
+                  <Table.Cell>{buyDate}</Table.Cell>
                   <Table.Cell>{sellDate}</Table.Cell>
                 </Table.Row>
               )

@@ -35,7 +35,7 @@ class FullList extends React.Component {
     const response = await axios
       .get('http://localhost:8080/api/bananas')
       .catch(console.error)
-    this.setState({ bananas: response.data })
+    this.setState({ bananas: response?.data })
   }
 
   render() {

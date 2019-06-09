@@ -144,7 +144,7 @@ class Analytics extends React.Component {
       .catch(console.error)
     this.setState(
       {
-        data: response.data,
+        data: response?.data,
       },
       this.hydrateStateWithLocalStorage()
     )
