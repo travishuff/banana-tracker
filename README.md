@@ -33,4 +33,4 @@ GET:
 
 ## Notes
 
-The backend database acts as the single source of truth for all data, so that multiple clients can be attached and get the latest data.
+Redux version: Redux loads its initial store value from the database and updates the database with each buy and sell.

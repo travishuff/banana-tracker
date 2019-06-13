@@ -1,8 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import axios from 'axios'
 import { compareAsc } from 'date-fns'
 
 import { Container, Form, Message } from 'semantic-ui-react'
+import { buyBanana } from './redux/actionCreators'
 
 class Buy extends React.Component {
   state = {
@@ -41,10 +43,15 @@ class Buy extends React.Component {
 
   handleSubmit = async event => {
     event.preventDefault()
+    const { buyDate, number } = this.state
 
     if (this.validate()) {
+      for (let i = 0; i < this.state.number; i++) {
+        this.props.buyBanana(buyDate)
+      }
+
       const response = await axios
-        .post('http://localhost:8080/api/bananas', this.state)
+        .post('http://localhost:8080/api/bananas', { buyDate, number })
         .catch(console.error)
 
       // pass in response so this function doesn't run until above promise is resolved
@@ -183,4 +190,7 @@ class Buy extends React.Component {
   }
 }
 
-export default Buy
+export default connect(
+  null,
+  { buyBanana }
+)(Buy)

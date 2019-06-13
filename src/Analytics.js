@@ -1,12 +1,11 @@
 import React from 'react'
-import axios from 'axios'
+import { connect } from 'react-redux'
 import {
   differenceInCalendarDays,
   format,
   lastDayOfMonth,
   startOfMonth,
 } from 'date-fns'
-import get from 'lodash/get'
 import { Link } from '@reach/router'
 
 import './css/analytics.css'
@@ -17,7 +16,6 @@ import Margins from './Margins'
 
 class Analytics extends React.Component {
   state = {
-    data: [],
     buyPrice: 0.2,
     sellPrice: 0.35,
     start: format(startOfMonth(new Date()), 'YYYY-MM-DD'),
@@ -25,38 +23,34 @@ class Analytics extends React.Component {
   }
 
   bananasByTime = () => {
-    return this.state.data.filter(banana => {
-      const buyDate = get(banana, 'buyDate', '')
-      const sellDate = get(banana, 'sellDate', '')
+    return this.props.data.filter(banana => {
+      const { buyDate, sellDate } = banana
+      const { start, end } = this.state
 
       return (
-        Date.parse(buyDate) >= Date.parse(this.state.start) &&
-        Date.parse(buyDate) <= Date.parse(this.state.end) &&
+        Date.parse(buyDate) >= Date.parse(start) &&
+        Date.parse(buyDate) <= Date.parse(end) &&
         (sellDate === null ||
-          (Date.parse(sellDate) >= Date.parse(this.state.start) &&
-            Date.parse(sellDate) <= Date.parse(this.state.end)))
+          (Date.parse(sellDate) >= Date.parse(start) &&
+            Date.parse(sellDate) <= Date.parse(end)))
       )
     })
   }
   expiredBananas = () => {
     return this.bananasByTime().filter(banana => {
-      return differenceInCalendarDays(new Date(), get(banana, 'buyDate')) >= 11
+      return differenceInCalendarDays(new Date(), banana.buyDate) >= 11
     })
   }
   soldBananas = () => {
-    return this.bananasByTime().filter(
-      banana => get(banana, 'sellDate') !== null
-    )
+    return this.bananasByTime().filter(banana => banana.sellDate !== null)
   }
   unexpiredBananas = () => {
     return this.bananasByTime().filter(banana => {
-      return differenceInCalendarDays(new Date(), get(banana, 'buyDate')) < 11
+      return differenceInCalendarDays(new Date(), banana.buyDate) < 11
     })
   }
   unsoldBananas = () => {
-    return this.bananasByTime().filter(
-      banana => get(banana, 'sellDate') === null
-    )
+    return this.bananasByTime().filter(banana => banana.sellDate === null)
   }
 
   // GAAP Measures: computed properties based on current state.
@@ -138,18 +132,9 @@ class Analytics extends React.Component {
     }
   }
 
-  async componentDidMount() {
-    const response = await axios
-      .get('http://localhost:8080/api/bananas')
-      .catch(console.error)
-    this.setState(
-      {
-        data: response?.data,
-      },
-      this.hydrateStateWithLocalStorage()
-    )
+  componentDidMount() {
+    this.hydrateStateWithLocalStorage()
   }
-
   render() {
     const { buyPrice, sellPrice, start, end } = this.state
 
@@ -287,4 +272,10 @@ class Analytics extends React.Component {
   }
 }
 
-export default Analytics
+const mapStateToProps = state => {
+  return {
+    data: state,
+  }
+}
+
+export default connect(mapStateToProps)(Analytics)

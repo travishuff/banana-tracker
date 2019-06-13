@@ -1,15 +1,15 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import axios from 'axios'
 import { addDays, compareAsc, isAfter } from 'date-fns'
-import get from 'lodash/get'
 
 import { Container, Form, Message } from 'semantic-ui-react'
+import { sellBanana } from './redux/actionCreators'
 
 class Sell extends React.Component {
   state = {
     number: '',
     sellDate: '',
-    unsoldBananas: [],
     hideError: true,
     hideSuccess: true,
     dateError: false,
@@ -45,6 +45,11 @@ class Sell extends React.Component {
     event.preventDefault()
 
     if (this.validate()) {
+      const soldBananas = this.sellBananas()
+      soldBananas.forEach(banana => {
+        this.props.sellBanana(banana.id, banana.buyDate, this.state.sellDate)
+      })
+
       const response = await axios
         .put('http://localhost:8080/api/bananas', this.state)
         .catch(console.error)
@@ -134,35 +139,37 @@ class Sell extends React.Component {
     return compareDates >= 0
   }
 
-  getBananas = async () => {
-    const response = await axios
-      .get('http://localhost:8080/api/bananas')
-      .catch(console.error)
-    this.parseBananas(response.data)
-  }
+  sellBananas = () => {
+    const { sellDate, number } = this.state
+    const { unsoldBananas } = this.props
 
-  parseBananas = bananas => {
-    const unsoldBananas = bananas.filter(banana => {
-      return get(banana, 'sellDate') === null
-    })
+    const soldBananas = []
+    let numRemainingToSell = number
 
-    this.setState({
-      unsoldBananas,
-    })
+    for (const b of unsoldBananas) {
+      const compareDates = compareAsc(sellDate, b.buyDate)
+      const isAvailable = compareDates <= 10
+
+      if (numRemainingToSell < 1) {
+        break
+      }
+      if (!b.sellDate && b.buyDate <= sellDate && isAvailable) {
+        soldBananas.push(b)
+        numRemainingToSell--
+      }
+    }
+
+    return soldBananas
   }
 
   getAvailableBananas = () => {
-    return this.state.unsoldBananas.filter(banana => {
+    return this.props.unsoldBananas.filter(banana => {
       if (isAfter(banana.buyDate, this.state.sellDate)) {
         return false
       }
       const expireDate = addDays(banana.buyDate, 10)
       return isAfter(expireDate, this.state.sellDate)
     })
-  }
-
-  async componentDidMount() {
-    this.getBananas()
   }
 
   render() {
@@ -223,4 +230,19 @@ class Sell extends React.Component {
   }
 }
 
-export default Sell
+const parseBananas = bananas => {
+  return bananas.filter(banana => {
+    return banana.sellDate === null
+  })
+}
+
+const mapStateToProps = state => {
+  return {
+    unsoldBananas: parseBananas(state),
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  { sellBanana }
+)(Sell)

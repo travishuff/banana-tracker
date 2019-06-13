@@ -1,5 +1,5 @@
 import React from 'react'
-import axios from 'axios'
+import { connect } from 'react-redux'
 import { Link } from '@reach/router'
 import sortBy from 'lodash/sortBy'
 
@@ -9,16 +9,16 @@ class FullList extends React.Component {
   state = {
     column: null,
     direction: null,
-    bananas: [],
+    bananasForSorting: this.props.bananas,
   }
 
   handleSort = clickedColumn => () => {
-    const { column, bananas, direction } = this.state
+    const { column, bananasForSorting, direction } = this.state
 
     if (column !== clickedColumn) {
       this.setState({
         column: clickedColumn,
-        bananas: sortBy(bananas, [clickedColumn]),
+        bananasForSorting: sortBy(bananasForSorting, [clickedColumn]),
         direction: 'ascending',
       })
 
@@ -26,20 +26,13 @@ class FullList extends React.Component {
     }
 
     this.setState({
-      bananas: bananas.reverse(),
+      bananasForSorting: bananasForSorting.reverse(),
       direction: direction === 'ascending' ? 'descending' : 'ascending',
     })
   }
 
-  async componentDidMount() {
-    const response = await axios
-      .get('http://localhost:8080/api/bananas')
-      .catch(console.error)
-    this.setState({ bananas: response?.data })
-  }
-
   render() {
-    const { column, direction, bananas } = this.state
+    const { column, direction, bananasForSorting } = this.state
 
     return (
       <Container fluid={true} className="main-container">
@@ -54,7 +47,7 @@ class FullList extends React.Component {
                 sorted={column === 'id' ? direction : null}
                 onClick={this.handleSort('id')}
               >
-                ID ({bananas.length} total)
+                ID ({bananasForSorting.length} total)
               </Table.HeaderCell>
               <Table.HeaderCell
                 sorted={column === 'buyDate' ? direction : null}
@@ -71,7 +64,7 @@ class FullList extends React.Component {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {bananas.map(({ buyDate, sellDate, id }) => (
+            {bananasForSorting.map(({ buyDate, sellDate, id }) => (
               <Table.Row key={id}>
                 <Table.Cell>{id}</Table.Cell>
                 <Table.Cell>{buyDate}</Table.Cell>
@@ -85,4 +78,10 @@ class FullList extends React.Component {
   }
 }
 
-export default FullList
+const mapStateToProps = state => {
+  return {
+    bananas: state,
+  }
+}
+
+export default connect(mapStateToProps)(FullList)

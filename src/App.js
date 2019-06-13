@@ -1,10 +1,14 @@
 import React from 'react'
 import { render } from 'react-dom'
+import { Provider } from 'react-redux'
 import Loadable from 'react-loadable'
 import { Router } from '@reach/router'
+import axios from 'axios'
 
 import 'semantic-ui-css/semantic.min.css'
 import './css/app.css'
+import store from './redux/store'
+import { initializeStore } from './redux/actionCreators'
 
 import NavBar from './NavBar'
 
@@ -36,7 +40,7 @@ const LoadableGroupList = Loadable({
 
 const App = () => {
   return (
-    <div>
+    <Provider store={store}>
       <NavBar />
       <Router>
         <LoadableHome path="/" />
@@ -46,8 +50,16 @@ const App = () => {
         <LoadableGroupList path="/groups" />
         <LoadableFullList path="/list" />
       </Router>
-    </div>
+    </Provider>
   )
 }
+
+// Update the store with saved database state.
+axios
+  .get('http://localhost:8080/api/bananas')
+  .then(response => {
+    store.dispatch(initializeStore(response.data))
+  })
+  .catch(console.error)
 
 render(<App />, document.getElementById('root'))
