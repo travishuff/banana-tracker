@@ -1,23 +1,14 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { differenceInCalendarDays } from 'date-fns'
 import { Link } from '@reach/router'
 
 import { Container, Table } from 'semantic-ui-react'
 
-class GroupList extends React.Component {
-  state = {
-    bananasObj: {},
-  }
+const GroupList = () => {
+  const [bananasObj, updateBananasObj] = useState({})
 
-  async componentDidMount() {
-    const response = await axios
-      .get('http://localhost:8080/api/bananas')
-      .catch(console.error)
-    this.setState({ bananasObj: this.parseBananas(response?.data) })
-  }
-
-  parseBananas = bananas => {
+  const parseBananas = bananas => {
     // Sort bananas by buyDate, then secondly by sellDate
     const sortedBananas = bananas.sort((a, b) => {
       const n = Date.parse(a.buyDate) - Date.parse(b.buyDate)
@@ -58,43 +49,44 @@ class GroupList extends React.Component {
     return bananasObj
   }
 
-  render() {
-    const { bananasObj } = this.state
+  useEffect(() => {
+    axios
+      .get('http://localhost:8080/api/bananas')
+      .then(response => updateBananasObj(parseBananas(response.data)))
+      .catch(console.error)
+  }, [])
 
-    return (
-      <Container fluid={true} className="main-container">
-        <h1>
-          <Link to="/analytics">←</Link> Banana Groups
-        </h1>
+  return (
+    <Container fluid={true} className="main-container">
+      <h1>
+        <Link to="/analytics">←</Link> Banana Groups
+      </h1>
 
-        <Table color="green" unstackable>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Amount</Table.HeaderCell>
-              <Table.HeaderCell>Buy Date</Table.HeaderCell>
-              <Table.HeaderCell>Sale Date</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {Object.keys(bananasObj).map(key => {
-              const [sellDate, quantity] = Object.entries(
-                bananasObj[key]
-              ).flat()
-              const buyDate = key.slice(0, 10)
+      <Table color="green" unstackable>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Amount</Table.HeaderCell>
+            <Table.HeaderCell>Buy Date</Table.HeaderCell>
+            <Table.HeaderCell>Sale Date</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
+          {Object.keys(bananasObj).map(key => {
+            const [sellDate, quantity] = Object.entries(bananasObj[key]).flat()
+            const buyDate = key.slice(0, 10)
 
-              return (
-                <Table.Row key={key}>
-                  <Table.Cell>{quantity}</Table.Cell>
-                  <Table.Cell>{buyDate}</Table.Cell>
-                  <Table.Cell>{sellDate}</Table.Cell>
-                </Table.Row>
-              )
-            })}
-          </Table.Body>
-        </Table>
-      </Container>
-    )
-  }
+            return (
+              <Table.Row key={key}>
+                <Table.Cell>{quantity}</Table.Cell>
+                <Table.Cell>{buyDate}</Table.Cell>
+                <Table.Cell>{sellDate}</Table.Cell>
+              </Table.Row>
+            )
+          })}
+        </Table.Body>
+      </Table>
+    </Container>
+  )
 }
 
 export default GroupList
