@@ -33,4 +33,6 @@ GET:
 
 ## Notes
 
+React Hooks aren't compatible with Semantic-UI forms at this point.
+
 The backend database acts as the single source of truth for all data, so that multiple clients can be attached and get the latest data.

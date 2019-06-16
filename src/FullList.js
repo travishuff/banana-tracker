@@ -10,6 +10,7 @@ const FullList = () => {
     column: null,
     direction: null,
   })
+
   const [bananas, updateBananas] = useState([])
 
   const handleSort = clickedColumn => () => {
@@ -24,6 +25,7 @@ const FullList = () => {
     }
 
     updateOrder({
+      ...order,
       direction: order.direction === 'ascending' ? 'descending' : 'ascending',
     })
     updateBananas(bananas.reverse())

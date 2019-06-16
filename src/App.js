@@ -34,20 +34,18 @@ const LoadableGroupList = Loadable({
   loading,
 })
 
-const App = () => {
-  return (
-    <div>
-      <NavBar />
-      <Router>
-        <LoadableHome path="/" />
-        <LoadableAnalytics path="/analytics" />
-        <LoadableBuy path="/buy" />
-        <LoadableSell path="/sell" />
-        <LoadableGroupList path="/groups" />
-        <LoadableFullList path="/list" />
-      </Router>
-    </div>
-  )
-}
+const App = () => (
+  <div>
+    <NavBar />
+    <Router>
+      <LoadableHome path="/" />
+      <LoadableAnalytics path="/analytics" />
+      <LoadableBuy path="/buy" />
+      <LoadableSell path="/sell" />
+      <LoadableGroupList path="/groups" />
+      <LoadableFullList path="/list" />
+    </Router>
+  </div>
+)
 
 render(<App />, document.getElementById('root'))
